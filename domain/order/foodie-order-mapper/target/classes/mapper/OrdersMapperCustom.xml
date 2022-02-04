@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rlj.order.mapper.OrdersMapperCustom" >
+  <resultMap id="myOrdersVO" type="com.rlj.order.pojo.vo.MyOrdersVO">
+      <id column="orderId" property="orderId" />
+      <result column="createdTime" property="createdTime" />
+      <result column="payMethod" property="payMethod" />
+      <result column="realPayAmount" property="realPayAmount" />
+      <result column="postAmount" property="postAmount" />
+      <result column="orderStatus" property="orderStatus" />
+      <!--property对应订单商品的list；ofType是集合的类型，订单商品的vo-->
+      <!--3、collection中使用属性select，作用就是查询完orders后，发现resultMap中还有subOrderItemList属性，来到这
+      个属性，发现了它里面有属性select，根据这个select中的语句继续进行查询，该语句单独写在一个标签中，这里传的是标签的ID；
+      同时要根据订单ID进行查询，所以这里还要写一个属性column，里面的值作为查询条件-->
+      <collection property="subOrderItemList" select="getSubItems"
+                  column="orderId" ofType="com.rlj.order.pojo.vo.MySubOrderItemVO">
+          <result column="itemId" property="itemId" />
+          <result column="itemName" property="itemName" />
+          <result column="itemImg" property="itemImg" />
+          <result column="itemSpecId" property="itemSpecId" />
+          <result column="itemSpecName" property="itemSpecName" />
+          <result column="buyCounts" property="buyCounts" />
+          <result column="price" property="price" />
+          <result column="isComment" property="isComment" />
+      </collection>
+  </resultMap>
+
+  <select id="queryMyOrdersDoNotUse" resultMap="myOrdersVO" parameterType="Map">
+    SELECT
+    od.id AS orderId,od.created_time AS createdTime,od.pay_method AS payMethod,
+    od.real_pay_amount AS realPayAmount,od.post_amount AS postAmount,
+    os.order_status AS orderStatus,oi.item_id AS itemId,oi.item_name AS itemName,
+    oi.item_img AS itemImg,oi.item_spec_name AS itemSpecName,
+    oi.buy_counts AS buyCounts,oi.price AS price
+    FROM orders od
+    LEFT JOIN order_status os
+    ON od.id = os.order_id
+    LEFT JOIN order_items oi
+    ON od.id = oi.order_id
+    WHERE od.user_id = #{paramsMap.userId}
+    AND od.is_delete = 0
+    <if test="paramsMap.orderStatus != null">
+        AND os.order_status = #{paramsMap.orderStatus}
+    </if>
+    ORDER BY od.updated_time ASC
+  </select>
+  <!--4、编写查询商品-订单表的Sql-->
+  <select id="getSubItems" resultType="com.rlj.order.pojo.vo.MySubOrderItemVO" parameterType="String">
+      SELECT
+        oi.item_id AS itemId,oi.item_name AS itemName,
+        oi.item_img AS itemImg,oi.item_spec_name AS itemSpecName,
+        oi.buy_counts AS buyCounts,oi.price AS price
+      FROM order_items oi
+      WHERE oi.order_id = #{orderId}
+  </select>
+
+  <select id="queryMyOrders" resultMap="myOrdersVO" parameterType="Map">
+      SELECT
+      <!--1、先删除原来查询的商品，现在只查询订单-->
+      od.id AS orderId,od.created_time AS createdTime,od.pay_method AS payMethod,
+      od.real_pay_amount AS realPayAmount,od.post_amount AS postAmount,
+      os.order_status AS orderStatus,od.is_comment as isComment
+      FROM orders od
+      LEFT JOIN order_status os
+      ON od.id = os.order_id
+      <!--2、这里也不再关联商品-订单表-->
+      WHERE od.user_id = #{paramsMap.userId}
+      AND od.is_delete = 0
+      <!--因为默认查询全部订单，但是也可以按照某个状态进行查询，所以要来这样一个条件-->
+      <if test="paramsMap.orderStatus != null and paramsMap.orderStatus != 0">
+          AND os.order_status = #{paramsMap.orderStatus}
+      </if>
+      ORDER BY od.updated_time ASC
+  </select>
+  <!--查询某种订单状态的数量-->
+  <select id="getMyOrderStatusCounts" parameterType="Map" resultType="int">
+      SELECT
+      count(1)  <!--count(1)和count(*)都可以-->
+      FROM
+      orders o
+      LEFT JOIN
+      order_status os
+      on
+      o.id = os.order_id
+      WHERE
+      o.user_id = #{paramsMap.userId}
+      AND
+      os.order_status = #{paramsMap.orderStatus}
+      <!--如果isComment不为空，就将评价也查出来-->
+      <if test="paramsMap.isComment != null">
+          and o.is_comment = #{paramsMap.isComment}
+      </if>
+  </select>
+  <select id="getMyOrderTrend" parameterType="Map" resultType="com.rlj.order.pojo.OrderStatus">
+      SELECT
+      os.order_id as orderId,os.order_status as orderStatus,os.created_time as createdTime,
+      os.pay_time as payTime,os.deliver_time as deliverTime,os.success_time as successTime,
+      os.close_time as closeTime,os.comment_time as commentTime
+      FROM orders o
+      LEFT JOIN order_status os
+      on o.id = os.order_id
+      WHERE o.is_delete = 0
+      AND o.user_id = #{paramsMap.userId}
+      AND os.order_status in (20, 30, 40)
+      ORDER BY os.order_id
+      DESC
+</select>
+
+</mapper>

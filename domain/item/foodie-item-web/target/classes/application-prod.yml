@@ -1,0 +1,8 @@
+#1、端口
+server:
+  port: 80
+#2、数据源改动
+spring:
+  datasource:  # 数据源的相关配置  为什么也是localhost？因为这是服务器的localhost啊
+    url: jdbc:mysql://localhost:3306/foodMart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+#3、生产环境我们的日志打印就不需要有了，这里的改动就是不要

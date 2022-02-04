@@ -1,0 +1,102 @@
+############################################################
+#
+# Tomcat 配置 端口号用8088!!
+#
+############################################################
+server:
+  #port: 8088
+  tomcat:
+    uri-encoding: UTF-8
+  max-http-header-size: 80KB
+############################################################
+#
+# 配置数据源信息
+#
+############################################################
+spring:
+  application:
+    name: foodie-order-service  #微服务注意：该微服务在注册中心中的名字
+  ## Feign 如果接口B继承接口A，而它们的@FeignClient的服务名称相同，则允许覆盖(如果不允许，则就产生冲突)
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev #和prod切换
+  datasource:  # 数据源的相关配置
+    type: com.zaxxer.hikari.HikariDataSource # 数据源类型：HikariCP
+    driver-class-name: com.mysql.jdbc.Driver # mysql驱动
+    # url: jdbc:mysql://localhost:3306/foodMart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: root
+    password: root1234
+    hikari:
+     connection-timeout: 30000 # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQ
+     minimum-idle: 5 # 最小连接数
+     maximum-pool-size: 20 # 最大连接数
+     auto-commit: true # 自动提交
+     idle-timeout: 600000 # 连接超时的最大时长（毫秒），超时则被释放（retired），默认:10分钟
+     pool-name: DateSourceHikariCP # 连接池名字
+     max-lifetime: 1800000 # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟
+     connection-test-query: SELECT 1
+  servlet:
+    multipart:
+      max-file-size: 512000 # 文件上传大小限制为500KB
+      max-request-size: 512000 # 请求大小限制为500KB
+  session:
+    store-type: redis #指定会话所保存的介质
+  #security:
+   # user:
+    #  name: rlj
+     # password: 111111
+############################################################
+#
+# mybatis 配置(微服务注意：改造在这里记得更改type-aliases-package路径)
+#
+############################################################
+mybatis:
+  type-aliases-package: com.rlj.order.pojo # 所有POJO类所在包路径
+  mapper-locations: classpath:mapper/*.xml # mapper映射文件
+  # configuration:
+  #   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #在控制台输出日志的实现
+############################################################
+#
+# mybatis mapper 配置
+#
+############################################################
+# 通用 Mapper 配置
+mapper:
+ mappers: com.rlj.my.mapper.MyMapper
+ not-empty: false
+ identity: MYSQL
+#分页插件配置
+pagehelper:
+  helperDialect: mysql            #告知我们所使用的数据库种类
+  supportMethodsArguments: true   #允许开启一些pagehelper的配置
+############################################################
+#
+# Ribbon/Feign的超时与重试策略(order涉及对item/user模块的方法，调用，所以只在这个order的
+#  配置文件中配置超时与重试策略，item/user就不需要了)
+#
+############################################################
+# 说明：优先级是指同一个配置，优先级高的配置值会覆盖优先级低的配置值
+ribbon:   # ribbon全局超时判定(优先级低)
+  ConnectTimeout: 1000    　　　　 #连接建立的超时时长，默认5秒
+  ReadTimeout:  3000      　　　　 #处理请求的超时时间，默认为5秒
+foodie-user-service:  # ribbon指定服务超时判定(优先级高)
+  ribbon:
+    ConnectTimeout: 1000    　　  　　 #连接建立的超时时长，默认5秒
+    ReadTimeout: 3000      　　   　　 #处理请求的超时时间，默认为5秒
+    MaxAutoRetries: 1                 #同一台实例的最大重试次数，但是不包括首次调用，默认为1次
+    MaxAutoRetriesNextServer: 0       #重试负载均衡其他实例的最大重试次数，不包括首次调用，默认为0次
+    OkToRetryOnAllOperations: true   #是否对所有操作都重试，默认false(即只对Get这种不改变数据的请求进行重试，
+    #改为true则会对所有类型的进行重试，因此若为true需要考虑增删改的幂等性)
+# Feign的超时判定，优先级整体高于Ribbon(即Feign的全局都高于Ribbon的指定服务)
+feign:
+  client:
+    config:
+      default:
+        # 全局默认配置(优先级低)
+        connectTimeout: 1000
+        readTimeout: 5000
+        # 指定服务超时判定(优先级高)
+        foodie-user-service:
+          connectTimeout: 1000
+          readTimeout: 5000

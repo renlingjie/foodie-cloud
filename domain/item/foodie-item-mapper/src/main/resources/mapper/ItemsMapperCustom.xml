@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rlj.item.mapper.ItemsMapperCustom" >
+  <select id="queryItemComments" parameterType="Map" resultType="com.rlj.item.pojo.vo.ItemCommentVO">
+    SELECT
+        ic.comment_level as commentLevel,ic.content as content,
+        ic.sepc_name as specName,ic.created_time as createdTime,
+        u.face as userFace,u.nickname as nickName
+    FROM items_comments ic
+    LEFT JOIN users u
+    ON ic.user_id = u.id
+    WHERE ic.item_id = #{paramsMap.itemId} <!--paramsMap就是我们传进来map的别名-->
+      <if test=" paramsMap.level != null and paramsMap.level != '' and paramsMap.level != 0">
+      AND ic.comment_level = #{paramsMap.level}
+      </if>
+  </select>
+  <select id="queryItemsBySpecIds" parameterType="List" resultType="com.rlj.item.pojo.vo.ShopcartVO">
+    SELECT
+    i.id as itemId,i.item_name as itemName,img.url as itemImgUrl,
+    spec.id as specId,spec.name as specName,spec.price_discount as priceDiscount,
+    spec.price_normal as priceNormal
+    FROM items_spec spec
+    LEFT JOIN items i
+    ON i.id = spec.item_id
+    LEFT JOIN items_img img
+    ON img.item_id = i.id
+    WHERE img.is_main = 1
+    AND spec.id IN
+    <!--定义我们传进来的名称是paramsList，然后会将其按照separator指定的符号分割，拿到的数据被命名为item指定的名字，然后将这些数据再拼接即可-->
+    <foreach collection="paramsList" index="index" item="specId" open="(" close=")" separator=",">
+        #{specId}
+    </foreach>
+  </select>
+  <update id="decreaseItemSpecStock">
+      update items_spec
+      set stock = stock - #{pendingCounts}
+      where id = #{specId}
+      and stock >= #{pendingCounts}   <!--这个条件就是乐观锁，不满足返回的更新记录条数就是0-->
+  </update>
+</mapper>

@@ -1,0 +1,28 @@
+#1、端口
+server:
+ port: 10004  # 微服务注意：后续要启动很多端口，这里就从10001开始
+#2、数据源改动
+spring:
+  datasource:  # 数据源的相关配置(微服务注意：每个服务都应该有对应的数据源)
+    url: jdbc:mysql://localhost:3306/foodMart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+  redis:
+    database: 1   #database数量，16以内，默认是0
+    host: localhost   #我们所使用的Redis所在的主机地址，这虚拟机的，若是我们的本机那就是127.0.0.1  可以用虚拟机的192.168.218.22
+    port: 6379
+    timeout: 500
+    # password: rlj   #Redis所在主机的配置文件中配置的密码
+  #redis:（主从）
+    #database: 1   #自己任意配置一个存储该项目的Redis库即可
+    #password: rlj   #和单实例一样，也需要输入密码
+    #sentinel:   #配置我们的主从架构的哨兵
+      #master: imooc-master   #指定我们的master节点的名称（就是在我们的配置文件中起的那个名字）
+      #nodes: 192.168.218.19:26379,192.168.218.3:26379   #指定从机的IP和哨兵端口号
+   #redis:（集群）
+     #集群模式没有database的概念
+     #password: rlj   #和单实例一样，也需要输入密码
+     #cluster:   #配置我们的主从架构的哨兵
+     #nodes: 192.168.218.19:6379,192.168.218.3:6379   #指定集群的IP和Redis端口号
+#3、开发环境我们的日志打印照旧
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #在控制台输出日志的实现

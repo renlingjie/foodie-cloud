@@ -1,0 +1,14 @@
+## 微服务启动顺序：#1
+spring:
+  application:
+    name: eureka-server
+  profiles:
+    active: dev
+server:
+  port: 20000
+eureka:
+  client:
+    fetch-registry: false          # 因为本身是注册中心，并不需要拉取注册列表
+    register-with-eureka: false    # 因为本身是注册中心，并不需要把自己注册进去
+  instance:
+    hostname: localhost            # hostname需要填入指向本机的，这里就是localhost

@@ -7,14 +7,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="foodie-user-web" />
-        <module name="foodie-user-service" />
-        <module name="foodie-item-api" />
         <module name="registry-center" />
-        <module name="foodie-user-pojo" />
         <module name="foodie-order-service" />
         <module name="foodie-cart-api" />
         <module name="foodie-cart-service" />
+        <module name="hystrix-turbine" />
+        <module name="foodie-item-pojo" />
+        <module name="hystrix-dashboard" />
+        <module name="foodie-order-pojo" />
+        <module name="foodie-user-mapper" />
+        <module name="foodie-user-web" />
+        <module name="foodie-user-service" />
+        <module name="foodie-item-api" />
+        <module name="foodie-user-pojo" />
         <module name="foodie-cloud-shared-pojo" />
         <module name="foodie-item-service" />
         <module name="foodie-user-api" />
@@ -22,13 +27,11 @@
         <module name="foodie-order-web" />
         <module name="foodie-cloud-common" />
         <module name="foodie-cart-web" />
-        <module name="foodie-item-pojo" />
+        <module name="config-server" />
         <module name="foodie-order-mapper" />
         <module name="foodie-cloud-web-components" />
-        <module name="foodie-order-pojo" />
         <module name="foodie-order-api" />
         <module name="foodie-item-web" />
-        <module name="foodie-user-mapper" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11">

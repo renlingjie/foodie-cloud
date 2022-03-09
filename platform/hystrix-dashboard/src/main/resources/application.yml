@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: hystrix-dashboard
+server:
+  port: 20002 # platform从eureka-server从20000开始(domain服务是从10000开始)

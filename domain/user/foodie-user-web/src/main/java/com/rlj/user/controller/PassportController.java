@@ -1,5 +1,7 @@
 package com.rlj.user.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.rlj.controller.BaseController;
 import com.rlj.pojo.IMOOCJSONResult;
 import com.rlj.pojo.ShopcartBO;
@@ -150,6 +152,23 @@ public class PassportController extends BaseController {
 
     //3、用户登录
     @PostMapping("/login")
+    //开启降级保护，采用静默降级，即开启保护时不进入方法，直接返回一个指定页面。比如12306，我们验证码明明有时候是正确的，
+    //但是还是提示错误，就是因为静默降级，根本没验证填写的验证码，直接返回错误提示页面
+    @HystrixCommand(
+            commandKey = "loginFail",  //全局唯一的标识服务，指定后可以在项目的yml文件中，通过这个commandKey，找到这个降级注解。不指定默认方法名(这里默认即login)
+            groupKey = "password",  //全局的服务分组，一般用于统计、前面的统计仪表盘dashboard，默认该方法所在类的类名
+            fallbackMethod = "loginFail",  //指定降级方法名，降级方法需要与该方法在同一个类中，且public/private修饰均可
+            //hystrix的线程池、信号量等配置，这里配置Hystrix的线程池(关于线程池复习一下Tomcat为什么不用JDK原生线程池)。即线程隔离的真正实现
+            //指定一个方法放到某个threadPoolKey对应的池子里，之后所有在此池子里的方法使用这个池子对应的线程，从而实现线程隔离(不同池子的方法，即使hang住，也不会
+            //影响其他池子里方法的执行，这个是注解版。还有继承HystrixCommand的代码版)
+            threadPoolKey = "threadPoolA",
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize",value = "20"),  //核心线程数
+                    @HystrixProperty(name = "maxQueueSize",value = "40")  //核心线程数满后，请求放到阻塞队列的最大容量
+            }
+            //hystrix的配置属性，比如之前我们的超时配置在配置文件中，也可以下放到@HystrixCommand的commandProperties中配置
+            //commandProperties = {}
+    )
     //返回的是一个枚举类，用来枚举不同状态下不同返回值的内涵
     //CookieUtils方法要用到HttpServletRequest、HttpServletResponse，所以一并传入
     public IMOOCJSONResult login(@RequestBody UserBO userBO, HttpServletRequest request,
@@ -179,8 +198,16 @@ public class PassportController extends BaseController {
 
         //从redis中同步购物车数据
         synchShopCartData(userResult.getId(),request,response);
-        return IMOOCJSONResult.ok();
+        return IMOOCJSONResult.ok(userResult);
     }
+
+    //上面@HystrixCommand中指定的降级方法(能到降级方法中肯定是异常、超时等，我们可以添加一个Throwable参数去接收错误)
+    private IMOOCJSONResult loginFail(UserBO userBO, HttpServletRequest request,
+                                     HttpServletResponse response, Throwable throwable) throws Exception{
+        return IMOOCJSONResult.errorMsg("登录失败！请重试");
+    }
+
+
     //4、定义一个清空查询到的Users对象的私密属性的方法
     private Users setNullProperty(Users userResult){
         userResult.setPassword(null);

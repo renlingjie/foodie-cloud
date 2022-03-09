@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: hystrix-turbine
+server:
+  port: 20001 # platform从eureka-server从20000开始(domain服务是从10000开始)
+############################################################
+#
+# Eureka注册中心
+#
+############################################################
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:20000/eureka/
+############################################################
+#
+# turbine相关配置
+#
+############################################################
+turbine:
+  # 1、指定了需要监控的服务名(某个服务的spring.application.name)
+  app-config: foodie-order-service
+  # 2、turbine集群名称，我们这里就一个，就默认default(这个必须有引号)
+  cluster-name-expression: '"default"'
+  # 3、turbine默认是通过host来区分不同服务，这里都是在本地测试，host相同。按照默认，这些不同服
+  # 务都是同一个服务，所以这里指定turbine不仅按照host来区分不同服务节点，还要按照port来区分
+  combine-host-port: true
+  # 4、actuator暴露出的hystrix服务(之后每个节点就可以通过--->ip:port/actuator/hystrix.stream访问到暴露的信息)
+  instanceUrlSuffix:
+    default: actuator/hystrix.stream
+  # 5、turbine用来聚合的集群也只有这一个默认的
+  aggregator:
+    clusterConfig: default
+
+
+
+

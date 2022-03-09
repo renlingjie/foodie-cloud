@@ -26,3 +26,15 @@ spring:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #在控制台输出日志的实现
+#4、开启actuator，暴露信息以供hystrix的turbine接收
+management:
+  # 4.1、暴露所有actuator接口，且不需要security检查(当然也可以指定需要暴露的接口)
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  # 4.2、将所有信息毫无保留的，全部暴露出去
+  endpoint:
+    health:
+      show-details: always
+

@@ -26,4 +26,46 @@ spring:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #在控制台输出日志的实现
+#4、开启actuator，暴露信息以供hystrix的turbine接收
+management:
+  # 4.1、暴露所有actuator接口，且不需要security检查(当然也可以指定需要暴露的接口)
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  # 4.2、将所有信息毫无保留的，全部暴露出去
+  endpoint:
+    health:
+      show-details: always
 
+# 4、Feign集成Hystrix需要的配置，设置为true，表示Feign接口上的Hystrix开启降级熔断
+feign:
+  hystrix:
+    enabled: true
+
+# 5、不能所有的配置都写在@HystrixCommand中，一些全局的配置，可以放在配置文件中
+hystrix:
+  command:
+    # 1、全局hystrix配置
+    default:
+      fallback:          #开启降级功能
+        enabled: true
+      circuitBreaker:    #开启熔断功能
+        enabled: true
+        requestVolumeThreshold: 5             #若在下main配置的熔断时间窗口中的请求达到5个，开启熔断判断
+        errorThresholdPercentage: 30          #判断时，超过30%错误，熔断正式打开
+        sleepWindowInMilliseconds: 20000      #开启熔断20s之后，进入半开状态
+        #forceClosed/forceOpen  强制关闭/开启熔断，默认均为false
+      execution:
+        timeout:
+          enabled: true
+          #可以指定隔离方式是线程池还是信号量(默认使用线程池)
+        isolation:
+          thread:
+            interruptOnTimeout: true       #超时的时候是否关闭线程池/信号量
+            interruptOnFutureCancel: true  #取消的时候否关闭线程池/信号量
+            timeoutInMilliseconds: 10000   #超时引起降级的触发时间，一般大于Ribbon执行重试机制后的时间
+      metrics:
+        rollingStatus:
+          timeInMilliseconds: 20000    #熔断的时间窗口
+          #numBuckets: 10

@@ -11,6 +11,7 @@
         <module>common/foodie-cloud-common</module>
         <module>common/foodie-cloud-shared-pojo</module>
         <module>platform/registry-center</module>
+        <module>platform/hystrix-turbine</module>
         <module>common/foodie-cloud-web-components</module>
         <module>domain/item/foodie-item-pojo</module>
         <module>domain/item/foodie-item-mapper</module>
@@ -26,11 +27,12 @@
         <module>domain/order/foodie-order-mapper</module>
         <module>domain/order/foodie-order-api</module>
         <module>domain/order/foodie-order-service</module>
-        <module>domain/oeder/foodie-order-web</module>
         <module>domain/order/foodie-order-web</module>
         <module>domain/cart/foodie-cart-api</module>
         <module>domain/cart/foodie-cart-service</module>
         <module>domain/cart/foodie-cart-web</module>
+        <module>platform/hystrix-dashboard</module>
+        <module>platform/config-server</module>
     </modules>
     <packaging>pom</packaging>
 

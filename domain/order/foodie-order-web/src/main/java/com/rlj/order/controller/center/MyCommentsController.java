@@ -3,6 +3,7 @@ package com.rlj.order.controller.center;
 import com.rlj.controller.BaseController;
 import com.rlj.enums.YesOrNo;
 import com.rlj.item.service.ItemCommentsService;
+import com.rlj.order.fallback.itemservice.ItemCommentsFeignService;
 import com.rlj.order.pojo.OrderItems;
 import com.rlj.order.pojo.Orders;
 import com.rlj.order.pojo.bo.center.OrderItemsCommentBO;
@@ -27,9 +28,11 @@ public class MyCommentsController extends BaseController {
 
     @Autowired
     private MyCommentsService myCommentsService;
-
+//    远程给我们提供的接口因为加了@FeignClient，可以直接远程调用，但是要是需要降级，只能自己写接口了
+//    @Autowired
+//    private ItemCommentsService itemCommentsService;
     @Autowired
-    private ItemCommentsService itemCommentsService;
+    private ItemCommentsFeignService itemCommentsService;
 
     @Autowired
     private MyOrdersService myOrdersService;

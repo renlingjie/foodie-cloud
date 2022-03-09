@@ -23,6 +23,11 @@
             <artifactId>foodie-user-mapper</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--引入hystrix依赖，除了用于做服务降级、熔断，web层的actuator暴露信息也需要该依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,5 +1,6 @@
 package com.rlj.user;
 
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import tk.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.ComponentScan;
 //扫描所有包以及相关组件（ID生成策略组件）包
 @ComponentScan(basePackages = {"com.rlj","org.n3r.idworker"})
 @EnableDiscoveryClient
+@EnableCircuitBreaker
 public class UserApplication {
     public static void main(String[] args) {
         SpringApplication.run(UserApplication.class,args);

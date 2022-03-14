@@ -33,13 +33,6 @@
             <artifactId>foodie-user-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--eureka-client都是放在web层，这里之所以要引入，是因为它要到注册中心，抓取user/item的
-        服务列表，以便在订单中心调用 TODO 学到Feign就可以把它删掉，直接进行服务接口间的调用
-        没有学习之前只能通过eureka+负载均衡调用-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
-<!--        </dependency>-->
         <!--引入hystrix依赖，除了用于做服务降级、熔断，actuator暴露信息也需要该依赖-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

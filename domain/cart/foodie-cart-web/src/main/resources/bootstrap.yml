@@ -7,3 +7,18 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:20000/eureka/
+############################################################
+#
+# Config配置中心
+#
+############################################################
+spring:
+  cloud:
+    config:
+      # 因为要用Eureka做配置中心的高可用，所以会用到服务发现，这里要将discovery打开，
+      # 并指定配置中心的service-id。如果不用，此项自然不用配置
+      discovery:
+        enabled: true
+        service-id: config-server
+      profile: pro
+      label: master

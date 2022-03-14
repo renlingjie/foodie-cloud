@@ -24,8 +24,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- TODO Feign dependencies-->
-
     </dependencies>
 
 </project>

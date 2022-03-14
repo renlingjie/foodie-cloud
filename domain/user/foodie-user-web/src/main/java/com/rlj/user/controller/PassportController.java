@@ -5,6 +5,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.rlj.controller.BaseController;
 import com.rlj.pojo.IMOOCJSONResult;
 import com.rlj.pojo.ShopcartBO;
+import com.rlj.user.UserApplicationConfig;
 import com.rlj.user.pojo.Users;
 
 import com.rlj.user.pojo.bo.UserBO;
@@ -39,6 +40,10 @@ public class PassportController extends BaseController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private UserApplicationConfig userApplicationConfig;
+
+
     //1、判断用户名是否存在
     @GetMapping("/usernameIsExist")
     //返回的是一个枚举类，用来枚举不同状态下不同返回值的内涵
@@ -60,6 +65,11 @@ public class PassportController extends BaseController {
     //返回的是一个枚举类，用来枚举不同状态下不同返回值的内涵   //cookie：也来一遍HttpServletRequest、HttpServletResponse
     public IMOOCJSONResult regist(@RequestBody UserBO userBO ,HttpServletRequest request,
                                   HttpServletResponse response) {//@RequestBody表示接收post请求中的请求体
+        // 配置中心控制注册功能的开闭
+        if (userApplicationConfig.isDisableRegistration()){
+            return IMOOCJSONResult.errorMsg("注册中心已经关闭用户注册功能，请发送对应请求开启！");
+        }
+
         String username = userBO.getUsername();
         String password = userBO.getPassword();
         String confirmPassword = userBO .getConfirmPassword();

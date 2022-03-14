@@ -1,0 +1,41 @@
+server:
+  port: 20003 # platform从eureka-server从20000开始(domain服务是从10000开始)
+# 1、配置中心的配置
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://gitee.com/ren-lingjie/foodie-cloud-config.git
+          force-pull: true
+          # 1、若不是public公开是要登录的的，在uri同一级下由username/password指定用户名密码
+          # 2、若配置文件在某路径下，因为默认只查main。故需在uri同一级下由search-paths指定路径，可以配置添加多个路径如
+          # "path1, path2"。之后配置中心Config-Server会从main、path1、path2三个地方下去读取。且可以用通配符如*等
+          # 这里我们每个微服务的配置文件不希望放在同一级的目录下，所以会指定search-paths，这里指定每个Client从它自己服务
+          # 名的路径下获取配置文件(所以我们在Gitee中配置的时候，根目录下建文件夹，需要按照服务名称去建立)
+          search-paths: '{application}'
+        # 如果需要用Gitee拉取的配置项将本地的相同配置项覆盖，在overrides下指定要覆盖的配置项
+        overrides:
+          test: mytest
+
+# 2、配置中心为了高可用，加入到Eureka中，这样多个配置中心都以上面的config-server作为一个服务，其他微服务拉取
+# 配置时就会负载均衡到某个节点上，从而实现高可用，不过这里就配置一个配置中心吧，后续想实现高可用再添加
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:20000/eureka/
+
+# 3、开启actuator(因为总线式架构的Config-Server需要用到actuator)
+management:
+  # 3.1、暴露所有actuator接口，且不需要security检查(当然也可以指定需要暴露的接口)
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  # 3.2、将所有信息毫无保留的，全部暴露出去
+  endpoint:
+    health:
+      show-details: always
+

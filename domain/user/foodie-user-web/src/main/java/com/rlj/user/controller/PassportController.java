@@ -2,6 +2,10 @@ package com.rlj.user.controller;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import com.rlj.auth.service.AuthService;
+import com.rlj.auth.service.pojo.Account;
+import com.rlj.auth.service.pojo.AuthCode;
+import com.rlj.auth.service.pojo.AuthResponse;
 import com.rlj.controller.BaseController;
 import com.rlj.pojo.IMOOCJSONResult;
 import com.rlj.pojo.ShopcartBO;
@@ -16,6 +20,7 @@ import com.rlj.utils.JsonUtils;
 import com.rlj.utils.MD5Utils;
 import com.rlj.utils.RedisOperator;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +30,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import static com.rlj.auth.service.pojo.AuthCode.SUCCESS;
+
+@Slf4j
 @RestController
 @RequestMapping("passport")
 public class PassportController extends BaseController {
@@ -38,10 +47,13 @@ public class PassportController extends BaseController {
     private RedisOperator redisOperator;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private UserApplicationConfig userApplicationConfig;
 
     @Autowired
-    private UserApplicationConfig userApplicationConfig;
+    private AuthService authService;
+
+    private static final String AUTH_HEADER = "Authorization";
+    private static final String UID_HEADER = "rlj-user-id";
 
 
     //1、判断用户名是否存在
@@ -72,7 +84,7 @@ public class PassportController extends BaseController {
 
         String username = userBO.getUsername();
         String password = userBO.getPassword();
-        String confirmPassword = userBO .getConfirmPassword();
+        String confirmPassword = userBO.getConfirmPassword();
         //上面是在前端进行的校验（ajax发过来的异步请求的校验），在我们保存数据库之前，也要再进行一次校验
         //2.1、判断用户名和密码是否为空
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)
@@ -196,7 +208,18 @@ public class PassportController extends BaseController {
             return IMOOCJSONResult.errorMsg("用户名或密码不正确");
         }
 
-        //生成用户token，存入redis会话
+        //登录成功，生成鉴权的Token
+        AuthResponse authResponse = authService.generateToken(userResult.getId());
+        if (!AuthCode.SUCCESS.getCode().equals(authResponse.getCode())){
+            log.error("Token error -- userId = {}",userResult.getId());
+            return IMOOCJSONResult.errorMsg("用户Token错误！");
+        }
+
+        //将Token添加到Header中 TODO 再次提醒，在前端拿到Authorization、rlj-user-id，之后每次请求，把这两个参数带上
+        response.setHeader(AUTH_HEADER, authResponse.getAccount().getToken());
+        response.setHeader(UID_HEADER, authResponse.getAccount().getUserId());
+
+
 
         //同理注册的session同步
         String uniqueToken = UUID.randomUUID().toString().trim();
@@ -244,5 +267,4 @@ public class PassportController extends BaseController {
         CookieUtils.deleteCookie(request,response,FOODIE_SHOPCART);
         return IMOOCJSONResult.ok();
     }
-
 }

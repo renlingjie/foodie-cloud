@@ -22,6 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {"com.rlj","org.n3r.idworker"})
 @EnableDiscoveryClient
 @EnableCircuitBreaker
+@EnableFeignClients(basePackages = {"com.rlj.auth"})
 public class UserApplication {
     public static void main(String[] args) {
         SpringApplication.run(UserApplication.class,args);

@@ -11,6 +11,8 @@
         <module name="foodie-order-service" />
         <module name="foodie-cart-api" />
         <module name="foodie-cart-service" />
+        <module name="foodie-auth-service" />
+        <module name="foodie-auth-api" />
         <module name="hystrix-turbine" />
         <module name="foodie-item-pojo" />
         <module name="hystrix-dashboard" />
@@ -32,6 +34,7 @@
         <module name="foodie-cloud-web-components" />
         <module name="foodie-order-api" />
         <module name="foodie-item-web" />
+        <module name="gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11">

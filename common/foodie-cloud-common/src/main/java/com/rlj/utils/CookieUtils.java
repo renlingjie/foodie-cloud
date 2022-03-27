@@ -206,7 +206,9 @@ public final class CookieUtils {
             if (cookieMaxage > 0)
                 cookie.setMaxAge(cookieMaxage);
             if (null != request) {// 设置域名的cookie
-            	String domainName = getDomainName(request);
+                //TODO 本地想要测试需要用localhost，之后上线我们要改回来
+            	//String domainName = getDomainName(request);
+                String domainName = "localhost";
                 logger.info("========== domainName: {} ==========", domainName);
                 if (!"localhost".equals(domainName)) {
                 	cookie.setDomain(domainName);
@@ -241,7 +243,9 @@ public final class CookieUtils {
             if (cookieMaxage > 0)
                 cookie.setMaxAge(cookieMaxage);
             if (null != request) {// 设置域名的cookie
-            	String domainName = getDomainName(request);
+                //TODO 本地想要测试需要用localhost，之后上线我们要改回来
+                //String domainName = getDomainName(request);
+                String domainName = "localhost";
                 logger.info("========== domainName: {} ==========", domainName);
                 if (!"localhost".equals(domainName)) {
                 	cookie.setDomain(domainName);

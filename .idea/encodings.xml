@@ -7,6 +7,10 @@
     <file url="file://$PROJECT_DIR$/common/foodie-cloud-shared-pojo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common/foodie-cloud-web-components/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common/foodie-cloud-web-components/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/auth/foodie-auth-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/auth/foodie-auth-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/auth/foodie-auth-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/auth/foodie-auth-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/cart/foodie-cart-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/cart/foodie-cart-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/cart/foodie-cart-service/src/main/java" charset="UTF-8" />
@@ -45,6 +49,8 @@
     <file url="file://$PROJECT_DIR$/domain/user/foodie-user-web/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/platform/config-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/platform/config-server/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/platform/gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/platform/gateway/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/platform/hystrix-dashboard/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/platform/hystrix-dashboard/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/platform/hystrix-turbine/src/main/java" charset="UTF-8" />

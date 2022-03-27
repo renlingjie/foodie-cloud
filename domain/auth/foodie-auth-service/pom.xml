@@ -10,31 +10,31 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>foodie-user-web</artifactId>
+    <artifactId>foodie-auth-service</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>foodie-user-service</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>foodie-cloud-web-components</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <!--直连配置中心服务方的客户端-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!--引入Auth，在用户登录成功的时候远程Feign调用其generateTokenAndCache生成令牌-->
+        <!-- Jwt生成加密Token -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.7.0</version>
+        </dependency>
+
         <dependency>
             <groupId>com.rlj</groupId>
             <artifactId>foodie-auth-api</artifactId>
@@ -42,14 +42,13 @@
         </dependency>
     </dependencies>
 
-    <!--还是希望它在外面可以通过jar的命令启动，拷贝registry-center的build-->
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.rlj.user.UserApplication</mainClass>
+                    <mainClass>com.rlj.auth.AuthApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

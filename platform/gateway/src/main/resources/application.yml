@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: platform-gateway
+  # Gateway也准备采用Redis限流，所以需要配置Redis
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+  # Feign 如果接口B继承接口A，而它们的@FeignClient的服务名称相同，则允许覆盖(如果不允许，则就产生冲突)
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    gateway:
+      # 跨域配置(使用Gateway解决跨域，之前的CorsConfig可以全部注释掉了)
+      globalcors:
+        cors-configurations:
+          # 匹配所有请求路径，即所有路径都会到这里由Gateway去处理跨域问题
+          '[/**]':
+            # 返回的资源共享给请求来源
+            allowed-origins:
+              - "http://localhost:8080"
+            # 允许请求携带一些认证信息，如cookie、authorization
+            allow-credentials: true
+            # 允许接收所有请求的header、允许接收请求任意类型方法的请求、允许将请求头暴露返回给前端
+            allowed-headers: "*"
+            allowed-methods: "*"
+            expose-headers: "*"
+            # 标识Options可以在浏览器缓存多长时间(单位：秒)
+            max-age: 600
+      discovery:
+        locator:
+          # 为true则Gateway会从注册中心拉取所有服务，并自动创建一个默认的路由规则。在生产上一般不开启自动创建
+          enabled: false
+          # 路由规则中的service-id变为小写(否则会用注册中心的大写的service-id)
+          lower-case-service-id: true
+server:
+  port: 20004
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:20000/eureka/
+
+management:
+  # 3.1、暴露所有actuator接口，且不需要security检查(当然也可以指定需要暴露的接口)
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  # 3.2、将所有信息毫无保留的，全部暴露出去
+  endpoint:
+    health:
+      show-details: always

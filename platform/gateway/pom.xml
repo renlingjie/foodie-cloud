@@ -6,50 +6,54 @@
         <artifactId>foodie-cloud</artifactId>
         <groupId>com.rlj</groupId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../../../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>foodie-user-web</artifactId>
+    <artifactId>gateway</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>foodie-user-service</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>foodie-cloud-web-components</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+        <!--网关层需要从注册中心拉取服务列表-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-
-        <!--直连配置中心服务方的客户端-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
-        <!--引入Auth，在用户登录成功的时候远程Feign调用其generateTokenAndCache生成令牌-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+        </dependency>
+        <!--给Gateway整合鉴权的Feign接口，以便每个请求到达Gateway，都可以通过Gateway远程调用鉴权服务对请求鉴权-->
         <dependency>
             <groupId>com.rlj</groupId>
             <artifactId>foodie-auth-api</artifactId>
             <version>${project.version}</version>
+            <!--但是Gateway是基于webflux的，和web天生冲突，所以引入的foodie-auth-api需要去掉它的web依赖
+            而且如果真的需要web支持，那也是引入spring-boot-starter-webflux这个依赖-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
-    <!--还是希望它在外面可以通过jar的命令启动，拷贝registry-center的build-->
+    <!--网关层也是需要放到外面以Jar包的方式启动-->
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.rlj.user.UserApplication</mainClass>
+                    <mainClass>com.rlj.GatewayApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -61,5 +65,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

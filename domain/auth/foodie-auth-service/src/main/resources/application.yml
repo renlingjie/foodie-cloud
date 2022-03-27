@@ -1,0 +1,22 @@
+server:
+  port: 10006
+
+spring:
+  application:
+    name: foodie-auth-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:20000/eureka/
+
+management:
+  # 暴露所有actuator接口，且不需要security检查(当然也可以指定需要暴露的接口)
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  # 将所有信息毫无保留的，全部暴露出去
+  endpoint:
+    health:
+      show-details: always

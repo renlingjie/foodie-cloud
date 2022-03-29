@@ -44,6 +44,16 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--Sleuth+Zipkin，完成对Gateway微服务的日志的埋点，并将日志发送给Zipkin统计、展示-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency>
     </dependencies>
 
     <!--网关层也是需要放到外面以Jar包的方式启动-->

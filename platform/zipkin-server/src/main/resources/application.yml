@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: zipkin-server
+  # 前面引入了Zipkin的前后端依赖，这两个依赖加载的时候会有类冲突，所以也需要允许Bean重载
+  main:
+    allow-bean-definition-overriding: true
+
+# 后台启动窗口最开始会有日志报错，加上则不显示，可有可无
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: false
+
+server:
+  port: 20005
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:20000/eureka/
+

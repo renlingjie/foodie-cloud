@@ -17,6 +17,7 @@
         <module name="foodie-item-pojo" />
         <module name="hystrix-dashboard" />
         <module name="foodie-order-pojo" />
+        <module name="zipkin-server" />
         <module name="foodie-user-mapper" />
         <module name="foodie-user-web" />
         <module name="foodie-user-service" />

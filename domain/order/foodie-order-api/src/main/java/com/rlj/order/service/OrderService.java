@@ -25,7 +25,7 @@ public interface OrderService {
     @GetMapping("orderStatus")
     public OrderStatus queryOrderStatusInfo(@RequestParam("orderId")String orderId);
 
-    //4、关闭超时未支付订单
-    @PostMapping("/closePendingOrders")
-    public void closeOrder();
+    //4、关闭超时未支付订单---->通过延迟消息关闭超时订单，原来通过请求触发关闭所有超时订单的方法弃置
+//    @PostMapping("/closePendingOrders")
+//    public void closeOrder();
 }

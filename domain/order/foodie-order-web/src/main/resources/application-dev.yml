@@ -30,6 +30,27 @@ spring:
     sampler:
       probability: 1  # 采样率设置为1
 
+  # 延迟消息关闭超时订单的Stream、消息队列相关配置
+  rabbitmq:
+    host: 192.168.218.4
+    port: 5672
+    username: admin
+    password: 123
+  cloud:
+    stream:
+      bindings:
+        close-order-consumer: # CloseOrderChannel的输入通道名称
+          destination: close-order-topic
+          group: close-order-group
+        close-order-producer: # CloseOrderChannel的输出通道名称
+          destination: close-order-topic
+      # 将输出通道close-order-producer的类型指定为延迟消息通道
+      rabbit:
+        bindings:
+          close-order-producer:
+            producer:
+              delayed-exchange: true
+
 #3、开发环境我们的日志打印照旧
 mybatis:
   configuration:

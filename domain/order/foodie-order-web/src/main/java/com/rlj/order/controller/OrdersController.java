@@ -4,11 +4,13 @@ import com.rlj.controller.BaseController;
 import com.rlj.enums.OrderStatusEnum;
 import com.rlj.enums.PayMethod;
 import com.rlj.order.pojo.OrderStatus;
+import com.rlj.order.pojo.bo.NeedCloseOrderBO;
 import com.rlj.order.pojo.bo.PlaceOrderBO;
 import com.rlj.order.pojo.bo.SubmitOrderBO;
 import com.rlj.order.pojo.vo.MerchantOrdersVO;
 import com.rlj.order.pojo.vo.OrderVO;
 import com.rlj.order.service.OrderService;
+import com.rlj.order.stream.CloseOrderChannel;
 import com.rlj.pojo.IMOOCJSONResult;
 import com.rlj.pojo.ShopcartBO;
 import com.rlj.utils.CookieUtils;
@@ -23,6 +25,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +49,8 @@ public class OrdersController extends BaseController {
     private RestTemplate restTemplate;
     @Autowired
     private RedisOperator redisOperator;
+    @Autowired
+    private CloseOrderChannel closeOrderChannel;
 
 
     //1、创建订单
@@ -108,6 +113,19 @@ public class OrdersController extends BaseController {
         redisOperator.set(FOODIE_SHOPCART + ":" + submitOrderBO.getUserId(),JsonUtils.objectToJson(shopcartList));
         //使用上面最新的shopcartList更新Cookie
         CookieUtils.setCookie(request,response,FOODIE_SHOPCART,JsonUtils.objectToJson(shopcartList),true);
+
+        // 在支付之前，发送延迟消息
+        NeedCloseOrderBO msg = new NeedCloseOrderBO();
+        msg.setOrderId(orderId);
+        closeOrderChannel.produce().send(
+                MessageBuilder.withPayload(msg)
+                        // 该消息会立即到RabbitMQ中，30分钟后发送给消费者，让消费者根据消息中的订单ID，去查看对应
+                        // 订单的状态，如果还是等待支付，那就把订单关闭
+                        .setHeader("x-delay", 1800 * 1000)
+                        .build()
+        );
+
+
         //3、向支付中心发送当前订单，用于保存支付中心的订单数据
         MerchantOrdersVO merchantOrdersVO = orderVO.getMerchantOrdersVO();
         merchantOrdersVO.setReturnUrl(payReturnUrl);

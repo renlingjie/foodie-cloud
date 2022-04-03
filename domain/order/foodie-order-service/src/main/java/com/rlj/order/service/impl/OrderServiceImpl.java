@@ -152,31 +152,35 @@ public class OrderServiceImpl implements OrderService {
         paidStatus.setPayTime(new Date());
         orderStatusMapper.updateByPrimaryKeySelective(paidStatus);
     }
+
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public OrderStatus queryOrderStatusInfo(String orderId) {
         return orderStatusMapper.selectByPrimaryKey(orderId);
     }
-    @Transactional(propagation = Propagation.REQUIRED)
-    @Override
-    public void closeOrder() {
-        //查询所有未付款订单，判断时间是否超时(1天)。超时则关闭交易
-        //说明一下：我们所有的查询条件的参数都是一个对象，将我们要查询的条件封装到这个对象中进
-        //行查询，这里查询未付款的，所以我们将未付款条件给这个对象，用这个对象作为参数进行查询
-        OrderStatus queryOrder = new OrderStatus();
-        queryOrder.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
-        List<OrderStatus> list = orderStatusMapper.select(queryOrder);
-        for (OrderStatus os : list){
-            //获得订单创建时间
-            Date createTime = os.getCreatedTime();
-            //和当前时间对比，daysBetween得到的结果是以天为单位
-            int days = DateUtil.daysBetween(createTime, new Date());
-            if (days > 1){
-                //超过一天，调用下面关闭订单的方法
-                doCloseOrder(os.getOrderId());
-            }
-        }
-    }
+
+    // 通过延迟消息关闭超时订单，原来通过请求触发关闭所有超时订单的方法弃置
+//    @Transactional(propagation = Propagation.REQUIRED)
+//    @Override
+//    public void closeOrder() {
+//        //查询所有未付款订单，判断时间是否超时(1天)。超时则关闭交易
+//        //说明一下：我们所有的查询条件的参数都是一个对象，将我们要查询的条件封装到这个对象中进
+//        //行查询，这里查询未付款的，所以我们将未付款条件给这个对象，用这个对象作为参数进行查询
+//        OrderStatus queryOrder = new OrderStatus();
+//        queryOrder.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
+//        List<OrderStatus> list = orderStatusMapper.select(queryOrder);
+//        for (OrderStatus os : list){
+//            //获得订单创建时间
+//            Date createTime = os.getCreatedTime();
+//            //和当前时间对比，daysBetween得到的结果是以天为单位
+//            int days = DateUtil.daysBetween(createTime, new Date());
+//            if (days > 1){
+//                //超过一天，调用下面关闭订单的方法
+//                doCloseOrder(os.getOrderId());
+//            }
+//        }
+//    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     void doCloseOrder(String orderId){
         OrderStatus close = new OrderStatus();

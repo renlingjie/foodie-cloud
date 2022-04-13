@@ -3,7 +3,8 @@ spring:
     name: platform-gateway
   # Gateway也准备采用Redis限流，所以需要配置Redis
   redis:
-    host: localhost
+    # host: localhost
+    host: 82.156.233.44
     port: 6379
     database: 0
   # Feign 如果接口B继承接口A，而它们的@FeignClient的服务名称相同，则允许覆盖(如果不允许，则就产生冲突)
@@ -18,7 +19,7 @@ spring:
           '[/**]':
             # 返回的资源共享给请求来源
             allowed-origins:
-              - "http://localhost:8080"
+              - "http://81.70.242.107:8080"
             # 允许请求携带一些认证信息，如cookie、authorization
             allow-credentials: true
             # 允许接收所有请求的header、允许接收请求任意类型方法的请求、允许将请求头暴露返回给前端
@@ -55,7 +56,8 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:20000/eureka/
+      # defaultZone: http://localhost:20000/eureka/
+      defaultZone: http://82.156.233.44:20000/eureka/
 
 management:
   # 3.1、暴露所有actuator接口，且不需要security检查(当然也可以指定需要暴露的接口)

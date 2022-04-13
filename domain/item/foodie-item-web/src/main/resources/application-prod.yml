@@ -1,8 +1,46 @@
 #1、端口
 server:
-  port: 80
+  port: 10001  # 微服务注意：后续要启动很多端口，这里就从10001开始
 #2、数据源改动
 spring:
-  datasource:  # 数据源的相关配置  为什么也是localhost？因为这是服务器的localhost啊
-    url: jdbc:mysql://localhost:3306/foodMart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
-#3、生产环境我们的日志打印就不需要有了，这里的改动就是不要
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据源的相关配置(微服务注意：每个服务都应该有对应的数据源)
+    url: ${datasource.url}
+    password: ${datasource.password}
+    username: ${datasource.username}
+  redis:
+    database: 1   #database数量，16以内，默认是0
+    host: 82.156.233.44
+    port: 6379
+    timeout: 500
+    # password: rlj   #Redis所在主机的配置文件中配置的密码
+  # Bus总线的消息队列连接信息
+  rabbitmq:
+    host: 152.136.220.204
+    port: 5672
+    username: admin
+    password: 123
+  # Sleuth+Zipkin，完成对User微服务的日志的埋点，并将日志发送给Zipkin统计、展示
+  # !!!因为一旦模块使用Bus刷新配置，依赖引入了bus-amqp，Sleuth智能的识别出来了，然后将默认的通过Web给Zipkin发送日志
+  # 的方式换成RabbitMq了，这样Zipkin默认是使用Web接收的，自然接收不到任何信息。所以这里指定Sleuth发送方式为Web
+  zipkin:
+    discovery-client-enabled: true
+    # Zipkin通过Eureka高可用后，可以通过服务发现来定位，这样base-url就不用写具体的IP了
+    base-url: http://ZIPKIN-SERVER/
+    locator:
+      discovery:
+        enabled: true
+    # Sleuth以Web(Http)的形式给Zipkin发送日志
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1  # 采样率设置为1
+
+#3、开发环境我们的日志打印照旧
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #在控制台输出日志的实现
+#4、开启actuator，暴露信息以供hystrix的turbine接收--统一放到了Gitee中
+

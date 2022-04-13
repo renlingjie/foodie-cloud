@@ -24,7 +24,8 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:20000/eureka/
+      # defaultZone: http://localhost:20000/eureka/
+      defaultZone: http://82.156.233.44:20000/eureka/
 
 management:
   # 暴露所有actuator接口，且不需要security检查(当然也可以指定需要暴露的接口)

@@ -17,13 +17,13 @@ spring:
   application:
     name: foodie-cart-service  #微服务注意：该微服务在注册中心中的名字
   profiles:
-    active: dev #和prod切换
-  datasource:  # 数据源的相关配置
+    active: prod #dev和prod切换
+  datasource:  # 数据源的相关配置(实际上不需要配置，因为我们的购物车是缓存，但是因为要引入common包，有数据源相关的依赖，所以配置一下)
     type: com.zaxxer.hikari.HikariDataSource # 数据源类型：HikariCP
     driver-class-name: com.mysql.jdbc.Driver # mysql驱动
     # url: jdbc:mysql://localhost:3306/foodMart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
-    username: root
-    password: root1234
+    # username: root
+    # password: root1234
     hikari:
      connection-timeout: 30000 # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQ
      minimum-idle: 5 # 最小连接数
@@ -39,10 +39,7 @@ spring:
       max-request-size: 512000 # 请求大小限制为500KB
   session:
     store-type: redis #指定会话所保存的介质
-  #security:
-   # user:
-    #  name: rlj
-     # password: 111111
+
 ############################################################
 #
 # mybatis 配置(微服务注意：改造在这里记得更改type-aliases-package路径)

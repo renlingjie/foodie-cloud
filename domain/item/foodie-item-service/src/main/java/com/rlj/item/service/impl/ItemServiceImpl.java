@@ -142,7 +142,7 @@ public class ItemServiceImpl implements ItemService {
         //具体来说就是很多人同时购买，同一时刻单一请求的判断库存都是够的，但是请求扣的总和实际上是不够的
         //方法一：使用synchronized关键字，首先性能差，而且集群下就没用了
         //方法二：锁数据库，导致数据库性能低下
-        //TODO 方法三：分布式锁(后面再用) zookeeper redis
+        //方法三：分布式锁(后面再用) zookeeper redis
         //方法四：目前暂时用乐观锁--->感觉老师说的有问题，这个加了"where 库存 > 购买数量"，是基于行锁的悲观锁
         int result = itemsMapperCustom.decreaseItemSpecStock(specId, buyCounts);
         if (result != 1){

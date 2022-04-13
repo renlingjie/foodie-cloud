@@ -19,7 +19,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   profiles:
-    active: dev #和prod切换
+    active: prod #dev和prod切换
   datasource:  # 数据源的相关配置
     type: com.zaxxer.hikari.HikariDataSource # 数据源类型：HikariCP
     driver-class-name: com.mysql.jdbc.Driver # mysql驱动

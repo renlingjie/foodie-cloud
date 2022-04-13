@@ -15,8 +15,9 @@ public class BaseController {
     //定义一个Redis的token名称
     public static final String REDIS_USR_TOKEN = "redis_usr_token";
     //支付成功前往后端支付成功接口的地址
-    // TODO 回调接口，这个老师没说，既然是OrdersController的notifyMerchantOrderPaid，所以改一下
-    public String payReturnUrl = "http://local:10003/foodie-order-web/orders/notifyMerchantOrderPaid";
+    // FIXME 回调接口，这个老师没说，既然是OrdersController的notifyMerchantOrderPaid，所以改一下
+    // 请求Order模块，直接用Gateway，会拦截/orders/**，之后去请求foodie-order-service服务下的对应方法
+    public String payReturnUrl = "http://152.136.220.204:20004/orders/notifyMerchantOrderPaid";
     //public String payReturnUrl = "http://8.141.50.179:8088/foodMart-api/orders/notifyMerchantOrderPaid";
     // 支付中心的调用地址
     public String paymentUrl = "http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";

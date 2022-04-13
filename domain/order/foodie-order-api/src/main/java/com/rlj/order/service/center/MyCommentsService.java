@@ -19,6 +19,6 @@ public interface MyCommentsService {
     public void saveComments(@RequestParam("orderId")String orderId, @RequestParam("userId")String userId,
                              @RequestBody List<OrderItemsCommentBO> commentList);
 
-    //我的评价查询(分页) TODO 移到ItemCommentsService中
+    //我的评价查询(分页)
     //public PagedGridResult queryMyComments(String userId, Integer page, Integer pageSize);
 }

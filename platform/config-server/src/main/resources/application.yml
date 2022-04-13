@@ -25,7 +25,8 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:20000/eureka/
+      #  defaultZone: http://localhost:20000/eureka/
+      defaultZone: http://82.156.233.44:20000/eureka/
 
 # 3、开启actuator(因为总线式架构的Config-Server需要用到actuator)
 management:

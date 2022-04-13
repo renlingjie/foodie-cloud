@@ -3,11 +3,8 @@ server:
  port: 10001  # 微服务注意：后续要启动很多端口，这里就从10001开始
 #2、数据源改动
 spring:
-  datasource:
-    # 数据源的相关配置(微服务注意：每个服务都应该有对应的数据源)
-    url: ${mariadb.url}
-    password: ${mariadb.password}
-    username: ${mariadb.username}
+  datasource: # 数据源的相关配置(微服务注意：每个服务都应该有对应的数据源)
+    url: jdbc:mysql://localhost:3306/foodMart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
   redis:
     database: 1   #database数量，16以内，默认是0
     host: localhost   #我们所使用的Redis所在的主机地址，这虚拟机的，若是我们的本机那就是127.0.0.1  可以用虚拟机的192.168.218.22

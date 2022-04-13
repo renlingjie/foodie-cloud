@@ -11,7 +11,8 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:20000/eureka/
+      # defaultZone: http://localhost:20000/eureka/
+      defaultZone: http://82.156.233.44:20000/eureka/
 ############################################################
 #
 # turbine相关配置
@@ -19,7 +20,7 @@ eureka:
 ############################################################
 turbine:
   # 1、指定了需要监控的服务名(某个服务的spring.application.name)
-  app-config: foodie-order-service
+  app-config: foodie-order-service,foodie-user-service,foodie-item-service,foodie-cart-service
   # 2、turbine集群名称，我们这里就一个，就默认default(这个必须有引号)
   cluster-name-expression: '"default"'
   # 3、turbine默认是通过host来区分不同服务，这里都是在本地测试，host相同。按照默认，这些不同服

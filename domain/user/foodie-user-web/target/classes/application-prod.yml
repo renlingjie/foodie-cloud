@@ -1,8 +1,80 @@
 #1、端口
 server:
-  port: 80
+  port: 10002  # 微服务注意：后续要启动很多端口，这里就从10001开始
 #2、数据源改动
 spring:
-  datasource:  # 数据源的相关配置  为什么也是localhost？因为这是服务器的localhost啊
-    url: jdbc:mysql://localhost:3306/foodMart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
-#3、生产环境我们的日志打印就不需要有了，这里的改动就是不要
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据源的相关配置(微服务注意：每个服务都应该有对应的数据源)
+    url: ${datasource.url}
+    password: ${datasource.password}
+    username: ${datasource.username}
+  redis:
+    database: 1   #database数量，16以内，默认是0
+    host: 82.156.233.44
+    port: 6379
+    timeout: 500
+  # Bus总线的消息队列连接信息
+  rabbitmq:
+    host: 152.136.220.204
+    port: 5672
+    username: admin
+    password: 123
+  # Sleuth+Zipkin，完成对User微服务的日志的埋点，并将日志发送给Zipkin统计、展示
+  # !!!因为一旦模块使用Bus刷新配置，依赖引入了bus-amqp，Sleuth智能的识别出来了，然后将默认的通过Web给Zipkin发送日志
+  # 的方式换成RabbitMq了，这样Zipkin默认是使用Web接收的，自然接收不到任何信息。所以这里指定Sleuth发送方式为Web
+  zipkin:
+    discovery-client-enabled: true
+    # Zipkin通过Eureka高可用后，可以通过服务发现来定位，这样base-url就不用写具体的IP了
+    base-url: http://ZIPKIN-SERVER/
+    locator:
+      discovery:
+        enabled: true
+    # Sleuth以Web(Http)的形式给Zipkin发送日志
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1  # 采样率设置为1
+
+#3、开发环境我们的日志打印照旧
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #在控制台输出日志的实现
+
+#4、开启actuator，暴露信息以供hystrix的turbine接收(已经在Gitee配置中心上配置)
+
+#5、不能所有的配置都写在@HystrixCommand中，一些全局的配置，可以放在配置文件中
+hystrix:
+  command:
+    # 1、全局hystrix配置
+    default:
+      fallback:          #开启降级功能
+        enabled: true
+      circuitBreaker:    #开启熔断功能
+        enabled: true
+        requestVolumeThreshold: 5             #若在下main配置的熔断时间窗口中的请求达到5个，开启熔断判断
+        errorThresholdPercentage: 30          #判断时，超过30%错误，熔断正式打开
+        sleepWindowInMilliseconds: 20000      #开启熔断20s之后，进入半开状态
+        #forceClosed/forceOpen  强制关闭/开启熔断，默认均为false
+      execution:
+        timeout:
+          enabled: true
+          #可以指定隔离方式是线程池还是信号量(默认使用线程池)
+        isolation:
+          thread:
+            interruptOnTimeout: true       #超时的时候是否关闭线程池/信号量
+            interruptOnFutureCancel: true  #取消的时候否关闭线程池/信号量
+            timeoutInMilliseconds: 10000   #超时引起降级的触发时间，一般大于Ribbon执行重试机制后的时间
+      metrics:
+        rollingStatus:
+          timeInMilliseconds: 20000    #熔断的时间窗口
+          #numBuckets: 10
+    # 2、某方法的hystrix单独配置。前提是添加@HystrixCommand注解，且注解中用commandKey指定一个标识，之后
+    # 就可以在上面default的同级，用此标识来表明对某方法的单独配置(若不配置。默认方法名，这里就写方法名)
+    loginFail:    #上面的配置在这个方法中都会生效，如果有什么不一样的，直接拿来进行单独修改
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 8000   #超时引起降级的触发时间，这里相较于全局的10s，改为8s
+

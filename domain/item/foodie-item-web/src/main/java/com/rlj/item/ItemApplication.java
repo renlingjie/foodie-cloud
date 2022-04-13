@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -21,6 +22,8 @@ import tk.mybatis.spring.annotation.MapperScan;
 //扫描所有包以及相关组件（ID生成策略组件）包
 @ComponentScan(basePackages = {"com.rlj","org.n3r.idworker"})
 @EnableDiscoveryClient
+// 为了actuator中有/hystrix.stream的暴露接口，turbine如果配置要收集这个微服务的信息，不加则没有此接口，会报错
+@EnableHystrix
 public class ItemApplication {
     public static void main(String[] args) {
         SpringApplication.run(ItemApplication.class,args);

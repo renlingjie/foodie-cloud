@@ -37,6 +37,12 @@
     <file url="file://$PROJECT_DIR$/domain/order/foodie-order-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/order/foodie-order-web/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/order/foodie-order-web/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/search/foodie-search-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/search/foodie-search-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/search/foodie-search-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/search/foodie-search-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/search/foodie-search-web/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/search/foodie-search-web/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/user/foodie-user-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/user/foodie-user-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/user/foodie-user-mapper/src/main/java" charset="UTF-8" />

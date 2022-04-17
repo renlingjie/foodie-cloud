@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="registry-center" />
         <module name="foodie-order-service" />
+        <module name="foodie-search-service" />
         <module name="foodie-cart-api" />
         <module name="foodie-cart-service" />
         <module name="foodie-auth-service" />
@@ -31,8 +32,10 @@
         <module name="foodie-cloud-common" />
         <module name="foodie-cart-web" />
         <module name="config-server" />
+        <module name="foodie-search-web" />
         <module name="foodie-order-mapper" />
         <module name="foodie-cloud-web-components" />
+        <module name="foodie-search-api" />
         <module name="foodie-order-api" />
         <module name="foodie-item-web" />
         <module name="gateway" />

@@ -8,11 +8,8 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
@@ -30,10 +27,7 @@ import java.util.Map;
 public class ItemsEsServiceImpl implements ItemsEsService {
 
     @Autowired
-    // 需要懒加载，否则会报错ield esTemplate in com.rlj.search.service.impl.ItemsEsServiceImpl required a bean of type
-    // 'org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate' that could not be found.
-    @Lazy
-    private ElasticsearchRestTemplate esTemplate;
+    private ElasticsearchTemplate esTemplate;
 
     @Override
     public PagedGridResult searchItems(String keywords, String sort, Integer pageIndex, Integer pageSize) {
@@ -62,21 +56,7 @@ public class ItemsEsServiceImpl implements ItemsEsService {
                 .withPageable(PageRequest.of(pageIndex, pageSize))
                 .build();
         // 根据查询对象得到查询结果
-        SearchHits<Items> search = esTemplate.search(searchQuery, Items.class);
-        // 其里面的searchHits就表示命中的查询数据，它也是一个数组的形式，里面每一条记录存储一条命中结果的相关信息
-        List<SearchHit<Items>> searchHits = search.getSearchHits();
-        // 设置一个需要返回的实体类集合，因为在searchHits中的每一条记录，有两大部分，一部分是普通的查询结果，一种是拼接了前后缀的高亮查询结果，
-        // 后者存在于该记录的的highlightFields属性中，所以我们将上述searchHits遍历，拿到这个属性，然后存储到我们的实体类集合中
-        List<Items> itemsList = new ArrayList<>();
-        // 遍历返回的内容进行处理
-        for(SearchHit<Items> searchHit : searchHits){
-            // 高亮的内容
-            Map<String, List<String>> highLightFields = searchHit.getHighlightFields();
-            // 将存在高亮的内容（字段）填充到content中，每个content中其实就是一个Items对象。比如说它原来查询的itenName是"小蛋糕好吃"，
-            // keywords是"蛋糕"，现在在就替换为highLightFields的"小<font color='red'>蛋糕</font>好吃"
-            searchHit.getContent().setItemName(highLightFields.get("itemName") == null ? searchHit.getContent().getItemName() : highLightFields.get("itemName").get(0));
-            itemsList.add(searchHit.getContent());
-        }
+        List<Items> itemsList = esTemplate.queryForList(searchQuery, Items.class);
 
         //新建一个查询数量的方法，用于创建分页所需的总记录数
         NativeSearchQuery searchQueryOfCount = new NativeSearchQueryBuilder()

@@ -43,6 +43,16 @@ spring:
     store-type: redis #指定会话所保存的介质
 ############################################################
 #
+# mybatis 配置(微服务注意：改造在这里记得更改type-aliases-package路径)
+#
+############################################################
+mybatis:
+  type-aliases-package: com.rlj.search.pojo # 所有POJO类所在包路径
+  mapper-locations: classpath:mapper/*.xml # mapper映射文件
+  # configuration:
+  #   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #在控制台输出日志的实现
+############################################################
+#
 # mybatis mapper 配置
 #
 ############################################################

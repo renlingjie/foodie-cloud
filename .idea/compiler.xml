@@ -14,6 +14,7 @@
         <module name="foodie-cart-service" />
         <module name="foodie-auth-service" />
         <module name="foodie-auth-api" />
+        <module name="foodie-search-pojo" />
         <module name="hystrix-turbine" />
         <module name="foodie-item-pojo" />
         <module name="hystrix-dashboard" />
@@ -27,6 +28,7 @@
         <module name="foodie-cloud-shared-pojo" />
         <module name="foodie-item-service" />
         <module name="foodie-user-api" />
+        <module name="foodie-search-mapper" />
         <module name="foodie-item-mapper" />
         <module name="foodie-order-web" />
         <module name="foodie-cloud-common" />

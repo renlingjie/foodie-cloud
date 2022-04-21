@@ -20,12 +20,13 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>foodie-cloud-web-components</artifactId>
+            <artifactId>foodie-search-mapper</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--引入hystrix依赖，除了用于做服务降级、熔断，actuator暴露信息也需要该依赖-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
         </dependency>
     </dependencies>
 

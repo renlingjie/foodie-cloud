@@ -10,28 +10,18 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>foodie-search-api</artifactId>
+    <artifactId>foodie-search-mapper</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>foodie-cloud-shared-pojo</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>foodie-search-pojo</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--为什么要web？因为我们要提供一个基于http的，可以被注册到Eureka注册中心的微服务，所以我们要把
-        我们一个个的service都声明成一个个controller，所以都需要web，就直接放到这个接口层就行-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>foodie-cloud-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

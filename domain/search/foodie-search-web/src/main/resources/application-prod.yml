@@ -1,6 +1,7 @@
+#1、端口
 server:
   port: 10007
-
+#2、数据源改动
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -8,6 +9,18 @@ spring:
     url: ${datasource.url}
     password: ${datasource.password}
     username: ${datasource.username}
+  redis:
+    database: 1   #database数量，16以内，默认是0
+    host: 82.156.233.44
+    port: 6379
+    timeout: 500
+    # password: rlj   #Redis所在主机的配置文件中配置的密码
+  # Bus总线的消息队列连接信息
+  rabbitmq:
+    host: 152.136.220.204
+    port: 5672
+    username: admin
+    password: 123
   # ES连接信息，配置ES集群名称和集群下的节点，这里就一个，节点之间用的是TCP(ES对应9300)
   data:
     elasticsearch:
@@ -35,4 +48,8 @@ spring:
     sampler:
       probability: 1  # 采样率设置为1
 
-
+#3、开发环境我们的日志打印照旧
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #在控制台输出日志的实现
+#4、开启actuator，暴露信息以供hystrix的turbine接收--统一放到了Gitee中

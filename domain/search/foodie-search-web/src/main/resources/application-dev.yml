@@ -1,10 +1,16 @@
+#1、端口
 server:
   port: 10007
-
+#2、数据源改动
 spring:
   datasource: # 数据源的相关配置(微服务注意：每个服务都应该有对应的数据源)
     url: jdbc:mysql://localhost:3306/foodMart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
   # ES连接信息，配置ES集群名称和集群下的节点，这里就一个，节点之间用的是TCP(ES对应9300)
+  redis:
+    database: 1   #database数量，16以内，默认是0
+    host: localhost   #我们所使用的Redis所在的主机地址，这虚拟机的，若是我们的本机那就是127.0.0.1  可以用虚拟机的192.168.218.22
+    port: 6379
+    timeout: 500
   data:
     elasticsearch:
       cluster-name: rlj-elasticsearch
@@ -30,5 +36,10 @@ spring:
   sleuth:
     sampler:
       probability: 1  # 采样率设置为1
+#3、开发环境我们的日志打印照旧
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #在控制台输出日志的实现
+#4、开启actuator，暴露信息以供hystrix的turbine接收--统一放到了Gitee中
 
 

@@ -6,6 +6,7 @@ import com.rlj.enums.CommentLevel;
 import com.rlj.enums.YesOrNo;
 import com.rlj.item.pojo.*;
 import com.rlj.item.mapper.*;
+import com.rlj.item.pojo.vo.SearchItemsVO;
 import com.rlj.pojo.PagedGridResult;
 import com.rlj.item.pojo.vo.CommentLevelCountsVO;
 import com.rlj.item.pojo.vo.ItemCommentVO;
@@ -159,5 +160,17 @@ public class ItemServiceImpl implements ItemService {
         gird.setTotal(pageList.getPages());//总记录数
         gird.setRecords(pageList.getTotal());//每行显示的内容
         return gird;
+    }
+
+    //根据三级分类的商品ID搜索商品列表
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedGridResult searchItemsByThirdCat(Integer catId, String sort, Integer page, Integer pageSize) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("catId",catId);
+        map.put("sort",sort);
+        PageHelper.startPage(page,pageSize);//查询第几页，每页多少条数据
+        List<SearchItemsVO> list = itemsMapperCustom.searchItemsByThirdCat(map);
+        return setterPagedGird(list,page);
     }
 }

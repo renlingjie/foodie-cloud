@@ -37,4 +37,33 @@
       where id = #{specId}
       and stock >= #{pendingCounts}   <!--这个条件就是乐观锁，不满足返回的更新记录条数就是0-->
   </update>
+  <select id="searchItemsByThirdCat" parameterType="Map" resultType="com.rlj.item.pojo.vo.SearchItemsVO">
+      SELECT
+      i.id as itemId,i.item_name as itemName,
+      i.sell_counts as sellCounts,ii.url as imgUrl,
+      tempSpec.price_discount as price
+      FROM items i
+      LEFT JOIN items_img ii
+      ON i.id = ii.item_id
+      LEFT JOIN(
+      SELECT item_id,MIN(price_discount) as price_discount
+      FROM items_spec
+      GROUP BY item_id
+      ) tempSpec
+      ON i.id = tempSpec.item_id
+      WHERE ii.is_main = 1
+      AND i.cat_id = #{paramsMap.catId}
+      ORDER BY
+      <choose>
+          <when test=" paramsMap.sort == &quot;c&quot; ">
+              i.sell_counts desc
+          </when>
+          <when test=" paramsMap.sort == &quot;p&quot; ">
+              tempSpec.price_discount asc
+          </when>
+          <otherwise>
+              i.item_name asc
+          </otherwise>
+      </choose>
+  </select>
 </mapper>

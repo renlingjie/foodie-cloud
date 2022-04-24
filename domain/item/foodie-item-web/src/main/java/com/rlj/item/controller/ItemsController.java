@@ -82,4 +82,23 @@ public class ItemsController extends BaseController {
         List<ShopcartVO> list = itemService.queryItemsBySpecIds(itemSpecIds);
         return IMOOCJSONResult.ok(list);
     }
+
+    @ApiOperation(value = "根据三级分类的商品ID搜索商品列表(分页)", notes = "根据三级分类的商品ID搜索商品列表(分页)", httpMethod = "GET")
+    @GetMapping("/catItems")
+    //前端的那个请求（serverUrl+'/items/catItems?catId='+catId+"&sort"+sort+&page="+page+"&pageSize="+pageSize,{}）
+    //这里的参数都是请求参数，而不是像之前是路径参数，所以这里@PathVariable--->@RequestParam
+    public IMOOCJSONResult catItems(@RequestParam Integer catId,@RequestParam String sort,
+                                    @RequestParam Integer page,@RequestParam Integer pageSize) {
+        if (catId == null) {
+            return IMOOCJSONResult.errorMsg(null);
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = Search_PAGE_SIZE;
+        }
+        PagedGridResult gird = itemService.searchItemsByThirdCat(catId, sort, page, pageSize);
+        return IMOOCJSONResult.ok(gird);
+    }
 }

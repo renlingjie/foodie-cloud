@@ -63,8 +63,8 @@ public class RoutesConfiguration {
                         .uri("lb://FOODIE-USER-SERVICE")
                 )
 
-                // 2、TODO 后续把ES的搜索模块集成进来
-                .route(r -> r.path("/search/**", "/index/**", "/items/search", "/items/catItems")
+                // 2、Search模块，前端轮播图、三级列表、ES高亮查询
+                .route(r -> r.path("/search/**", "/index/**", "/items/search")
                         .uri("lb://FOODIE-SEARCH-SERVICE")
                 )
 

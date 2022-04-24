@@ -72,10 +72,11 @@ public class IndexController {
             return IMOOCJSONResult.errorMsg("分类不存在");
         }
         List<CategoryVO> list = new ArrayList<>();
-        String subCatsStr = redisOperator.get("subCats");
+        String redisKey = "subCats" + "_" + rootCatId;
+        String subCatsStr = redisOperator.get(redisKey);
         if (StringUtils.isBlank(subCatsStr)){
             list = categoryService.getSubCatList(rootCatId);
-            redisOperator.set("subCats", JsonUtils.objectToJson(list));
+            redisOperator.set(redisKey, JsonUtils.objectToJson(list));
         }else {
             list = JsonUtils.jsonToList(subCatsStr,CategoryVO.class);
         }

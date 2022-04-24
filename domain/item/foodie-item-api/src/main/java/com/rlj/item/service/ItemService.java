@@ -52,4 +52,6 @@ public interface ItemService {
     //10、在用户提交订单之后，规格表中需要扣除库存
     @PostMapping("decreaseStock")
     public void decreaseItemSpecStock(@RequestParam("specId")String specId,@RequestParam("buyCounts")int buyCounts);
+    //11、根据三级分类的商品ID搜索商品列表(需要分页的)
+    public PagedGridResult searchItemsByThirdCat(Integer catId, String sort, Integer page, Integer pageSize);
 }

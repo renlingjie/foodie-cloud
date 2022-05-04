@@ -25,6 +25,10 @@ import java.net.URLEncoder;
 public final class CookieUtils {
 
     final static Logger logger = LoggerFactory.getLogger(CookieUtils.class);
+
+    // Gateway作为网关，前后端都放在其后，所以Cookie的domain应该是Gateway的公网IP，实际上请求的domain就是Gateway的IP，
+    // 但是是内网的(Eureka注册的都是用内网注册的，这个应该改为公网的才对，以后再说吧)
+    public static final String GATEWAY_IP = "43.138.12.238";
 	
 	/**
 	 * 
@@ -205,15 +209,18 @@ public final class CookieUtils {
             Cookie cookie = new Cookie(cookieName, cookieValue);
             if (cookieMaxage > 0)
                 cookie.setMaxAge(cookieMaxage);
-            if (null != request) {// 设置域名的cookie
-                //TODO 本地想要测试需要用localhost，之后上线我们要改回来
-            	String domainName = getDomainName(request);
-                //String domainName = "localhost";
-                logger.info("========== domainName: {} ==========", domainName);
-                if (!"localhost".equals(domainName)) {
-                	cookie.setDomain(domainName);
-                }
-            }
+            // TODO 本地想要测试需要用localhost，之后上线我们要改回来。但是这里上线发现domain变成内网的IP了，
+            //  比较尴尬，这里手动设置为Gateway的公网IP，后续再说吧(应该没后续了哈哈)
+//            if (null != request) {// 设置域名的cookie
+//                // 本地想要测试需要用localhost，之后上线我们要改回来
+//            	String domainName = getDomainName(request);
+//                //String domainName = "localhost";
+//                logger.info("========== domainName: {} ==========", domainName);
+//                if (!"localhost".equals(domainName)) {
+//                	cookie.setDomain(domainName);
+//                }
+//            }
+            cookie.setDomain(GATEWAY_IP);
             cookie.setPath("/");
             response.addCookie(cookie);
         } catch (Exception e) {
@@ -242,15 +249,16 @@ public final class CookieUtils {
             Cookie cookie = new Cookie(cookieName, cookieValue);
             if (cookieMaxage > 0)
                 cookie.setMaxAge(cookieMaxage);
-            if (null != request) {// 设置域名的cookie
-                //TODO 本地想要测试需要用localhost，之后上线我们要改回来
-                String domainName = getDomainName(request);
-                //String domainName = "localhost";
-                logger.info("========== domainName: {} ==========", domainName);
-                if (!"localhost".equals(domainName)) {
-                	cookie.setDomain(domainName);
-                }
-            }
+            // TODO 本地想要测试需要用localhost，之后上线我们要改回来。但是这里上线发现domain变成内网的IP了，
+            //  比较尴尬，这里手动设置为Gateway的公网IP，后续再说吧(应该没后续了哈哈)
+//            if (null != request) {// 设置域名的cookie
+//                 String domainName = getDomainName(request);
+//                 logger.info("========== domainName: {} ==========", domainName);
+//                 if (!"localhost".equals(domainName)) {
+//                 cookie.setDomain(domainName);
+//                 }
+//            }
+            cookie.setDomain(GATEWAY_IP);
             cookie.setPath("/");
             response.addCookie(cookie);
         } catch (Exception e) {

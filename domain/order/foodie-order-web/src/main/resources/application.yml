@@ -73,15 +73,22 @@ pagehelper:
 ############################################################
 # 说明：优先级是指同一个配置，优先级高的配置值会覆盖优先级低的配置值
 ribbon:   # ribbon全局超时判定(优先级低)
-  ConnectTimeout: 1000    　　　　 #连接建立的超时时长，默认5秒
-  ReadTimeout:  3000      　　　　 #处理请求的超时时间，默认为5秒
+  #连接建立的超时时长，默认5秒
+  ConnectTimeout: 1000
+  #处理请求的超时时间，默认为5秒　　　　
+  ReadTimeout: 3000
 foodie-user-service:  # ribbon指定服务超时判定(优先级高)
   ribbon:
-    ConnectTimeout: 1000    　　  　　 #连接建立的超时时长，默认5秒
-    ReadTimeout: 3000      　　   　　 #处理请求的超时时间，默认为5秒
-    MaxAutoRetries: 1                 #同一台实例的最大重试次数，但是不包括首次调用，默认为1次
-    MaxAutoRetriesNextServer: 0       #重试负载均衡其他实例的最大重试次数，不包括首次调用，默认为0次
-    OkToRetryOnAllOperations: true   #是否对所有操作都重试，默认false(即只对Get这种不改变数据的请求进行重试，
+    #连接建立的超时时长，默认5秒
+    ConnectTimeout: 1000
+    #处理请求的超时时间，默认为5秒
+    ReadTimeout: 3000
+    #同一台实例的最大重试次数，但是不包括首次调用，默认为1次
+    MaxAutoRetries: 1
+    #重试负载均衡其他实例的最大重试次数，不包括首次调用，默认为0次
+    MaxAutoRetriesNextServer: 0
+    #是否对所有操作都重试，默认false(即只对Get这种不改变数据的请求进行重试，
+    OkToRetryOnAllOperations: true
     #改为true则会对所有类型的进行重试，因此若为true需要考虑增删改的幂等性)
 # Feign的超时判定，优先级整体高于Ribbon(即Feign的全局都高于Ribbon的指定服务)
 feign:

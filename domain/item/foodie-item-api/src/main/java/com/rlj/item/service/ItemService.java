@@ -53,5 +53,7 @@ public interface ItemService {
     @PostMapping("decreaseStock")
     public void decreaseItemSpecStock(@RequestParam("specId")String specId,@RequestParam("buyCounts")int buyCounts);
     //11、根据三级分类的商品ID搜索商品列表(需要分页的)
-    public PagedGridResult searchItemsByThirdCat(Integer catId, String sort, Integer page, Integer pageSize);
+    @GetMapping("getItemsByThirdCat")
+    public PagedGridResult searchItemsByThirdCat(@RequestParam("catId")Integer catId, @RequestParam("sort")String sort,
+                                                 @RequestParam("page")Integer page, @RequestParam("pageSize")Integer pageSize);
 }

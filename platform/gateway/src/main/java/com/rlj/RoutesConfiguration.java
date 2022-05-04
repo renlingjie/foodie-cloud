@@ -49,6 +49,14 @@ public class RoutesConfiguration {
                  *   注：如果不好处理，就把这个Auth模块注释掉吧
                  */
 
+                // 0、前端--前后端都放在网关层后面，从而解决跨域问题
+                .route(r -> r.path("/foodie-shop/**")
+                        .uri("http://81.70.242.107:8080/foodie-shop")
+                )
+                .route(r -> r.path("/foodie-center/**")
+                        .uri("http://81.70.242.107:8080/foodie-center")
+                )
+
                 // 1、Auth模块：凡是要验证用户是否登录的请求Url都添加在下面，之后拦截这些请求去自定义的AuthFilter中校验
                 // 如果校验失败，返回校验失败的Http状态码。注意！！因为这些请求都是User模块的，所以校验成功就负载均衡这个
                 // 请求到User模块。其他模块的请求如果要鉴权，就需要新建route，当然filter不用变，但是uri就改为对应模块的

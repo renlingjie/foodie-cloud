@@ -62,7 +62,7 @@ public class OrdersController extends BaseController {
                                   HttpServletRequest request, HttpServletResponse response) {
         //使用Redisson前唯一要做的事情---配置Redisson(Redisson的Config)，完成后就可以创建Redisson客户端实例
         Config config = new Config();
-        //这里我们只启动一个Redis，所以使用SingleServer
+        //这里我们只启动一个Redis，所以使用SingleServer，而微服务的Redis目前就是和Order在同一个服务器上，所以直接localhost
         config.useSingleServer().setAddress("redis://localhost:6379");
         RedissonClient redissonClient = Redisson.create(config);
         /**
@@ -98,7 +98,10 @@ public class OrdersController extends BaseController {
 
         String shopCartJson = redisOperator.get(FOODIE_SHOPCART + ":" + submitOrderBO.getUserId());
         if (StringUtils.isBlank(shopCartJson)){
-            return IMOOCJSONResult.errorMsg("购物车数据不正确");
+            // 因为购物车缓存被清空，但是Cookie还在，那么下一次请求带上Cookie的购物车数据会和缓存的数据不一致，
+            // 因此这里如果检查到缓存被清空，那么也要同步清空Cookie
+            CookieUtils.deleteCookie(request,response,FOODIE_SHOPCART);
+            return IMOOCJSONResult.errorMsg("购物车数据不正确，每1个小时会清空一次购物车数据，请重新下单");
         }
         List<ShopcartBO> shopcartList = JsonUtils.jsonToList(shopCartJson,ShopcartBO.class);
 
@@ -178,7 +181,7 @@ public class OrdersController extends BaseController {
     @PostMapping("/getOrderToken")
     public IMOOCJSONResult getOrderToken(HttpSession session){
         String token = UUID.randomUUID().toString();
-        redisOperator.set("ORDER_TOKEN_"+session.getId(),token,600);
+        redisOperator.set("ORDER_TOKEN_"+session.getId(),token,3600);
         return IMOOCJSONResult.ok(token);
     }
 }

@@ -143,9 +143,10 @@ public class OrdersController extends BaseController {
                 restTemplate.postForEntity(paymentUrl, entity, IMOOCJSONResult.class);
         //拿到支付中心返回的结果
         IMOOCJSONResult paymentResult = responseEntity.getBody();
-        if (paymentResult.getStatus() != 200){
-            return IMOOCJSONResult.errorMsg("支付中心订单创建失败，请联系订单管理员");
-        }
+        // 目前这个paymentUrl对应的支付中心不能用了，返回必然报错，所以暂时注释，默认创建订单都成功
+//        if (paymentResult.getStatus() != 200){
+//            return IMOOCJSONResult.errorMsg("支付中心订单创建失败，请联系订单管理员");
+//        }
         return IMOOCJSONResult.ok(orderId);
     }
 
